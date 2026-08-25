@@ -4,4 +4,4 @@ Machine learning project for detecting phishing and malicious web pages.
 
 ## Project status
 
-?? In development
+⛔​ In development
