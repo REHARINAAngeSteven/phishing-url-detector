@@ -50,5 +50,5 @@
   "domain_in_brand",
   "brand_in_subdomain",
   "brand_in_path",
-  "suspecious_tld"
+  "suspicious_tld"
 ]

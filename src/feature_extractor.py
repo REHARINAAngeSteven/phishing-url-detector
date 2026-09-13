@@ -287,7 +287,7 @@ def f_brand_in_subdomain(ctx):                                                 #
     sub = ctx.subdomain.lower()
     return 1 if any(b in sub for b in KNOWN_BRANDS) and ctx.domain.lower() not in KNOWN_BRANDS else 0
 
-def f_suspecious_tld(ctx): return 1 if ctx.suffix.lower() in SUSPICIOUS_TLDS else 0  # trivial (dépend de la liste)
+def f_suspicious_tld(ctx): return 1 if ctx.suffix.lower() in SUSPICIOUS_TLDS else 0  # trivial (dépend de la liste)
 
 
 # ---------------------------------------------------------------------------
@@ -502,7 +502,7 @@ FEATURE_FUNCTIONS = {
     "avg_words_raw": f_avg_words_raw, "avg_word_host": f_avg_word_host, "avg_word_path": f_avg_word_path,
     "phish_hints": f_phish_hints, "domain_in_brand": f_domain_in_brand,
     "brand_in_subdomain": f_brand_in_subdomain, "brand_in_path": f_brand_in_path,
-    "suspecious_tld": f_suspecious_tld, "nb_hyperlinks": f_nb_hyperlinks,
+    "suspicious_tld": f_suspicious_tld, "nb_hyperlinks": f_nb_hyperlinks,
     "ratio_intHyperlinks": f_ratio_intHyperlinks, "ratio_extHyperlinks": f_ratio_extHyperlinks,
     "ratio_nullHyperlinks": f_ratio_nullHyperlinks, "nb_extCSS": f_nb_extCSS,
     "ratio_intRedirection": f_ratio_intRedirection, "ratio_extRedirection": f_ratio_extRedirection,
@@ -531,7 +531,7 @@ def load_feature_order(feature_list_path: str = "models/feature_list.json"):
 
 def extract_features(url: str, feature_order=None) -> list:
     """
-    Point d'entrée principal : URL -> liste de 79 valeurs, dans l'ordre
+    Point d'entrée principal : URL -> liste de valeurs de features, dans l'ordre
     de models/feature_list.json (source de vérité pour l'ordre exact).
     """
     if feature_order is None:

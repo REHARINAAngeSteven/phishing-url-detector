@@ -1,7 +1,7 @@
 """
 predict.py — Phishing URL Detector
 
-Pipeline complet : URL -> 79 features -> scaler -> Random Forest -> prédiction.
+Pipeline complet : URL -> features (selon feature_list.json) -> scaler -> Random Forest -> prédiction.
 
 Usage en CLI :
     python src/predict.py "http://example.com/login"
@@ -91,7 +91,7 @@ def predict_url(url: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Prédire si une URL est du phishing.")
     parser.add_argument("url", help="URL à analyser")
-    parser.add_argument("--show-features", action="store_true", help="Afficher les 79 valeurs extraites")
+    parser.add_argument("--show-features", action="store_true", help="Afficher les valeurs de features extraites")
     args = parser.parse_args()
 
     result = predict_url(args.url)
