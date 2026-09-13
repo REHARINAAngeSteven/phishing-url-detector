@@ -107,11 +107,17 @@ def main():
     X_train_s = scaler.fit_transform(X_train)
     X_test_s = scaler.transform(X_test)
 
-    # Mêmes hyperparamètres que le Random Forest du notebook original,
-    # pour rester comparable.
+    # ⚠️ IMPORTANT — Alignement avec le notebook
+    # Ces hyperparamètres doivent rester alignés avec ceux du notebook
+    # notebooks/02_url_only_52_features.ipynb. Toute modification doit
+    # être répercutée dans les deux fichiers pour éviter les divergences.
     rf = RandomForestClassifier(
-        n_estimators=100, random_state=42, max_depth=10,
-        min_samples_split=5, n_jobs=-1,
+        n_estimators=200,
+        max_depth=20,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        random_state=42,
+        n_jobs=-1,
     )
     rf.fit(X_train_s, y_train)
     y_pred = rf.predict(X_test_s)
