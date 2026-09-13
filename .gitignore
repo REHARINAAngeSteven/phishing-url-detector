@@ -32,9 +32,15 @@ data/processed/*.csv
 # ============================================================
 # Modèles entraînés
 # ============================================================
-# Les gros modèles ne sont pas versionnés directement
-models/*.pkl
-models/*.joblib
+# Versionné ny artefacts de production (modèle final,
+# scaler, encoder, liste des features) 
+# @'izay afaka mampiasa azy daholo ny olona jiaby.
+# Tout autre artefact (anciens modèles, checkpoints) est ignoré.
+models/*
+!models/best_model.joblib
+!models/scaler.joblib
+!models/label_encoder.joblib
+!models/feature_list.json
 
 # ============================================================
 # Variables d'environnement / secrets

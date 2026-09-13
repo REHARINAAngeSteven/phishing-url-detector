@@ -55,7 +55,9 @@ Ce script régénère, dans `models/` :
 python tools/stress_test.py
 ```
 
-Doit afficher un score autour de 83% sur les cas étiquetés.
+Doit afficher un score d'environ 87-88% sur les cas étiquetés.
+Les cas en erreur sont des faux positifs sur des URLs légitimes contenant
+des identifiants longs (voir section "Limitation connue").
 
 ## 🔬 De 87 features à 52 features URL-only
 
@@ -223,6 +225,17 @@ On obtient finalement :
 
 Le modèle est donc entraîné avec **52 features**, toutes calculables directement à partir de l'URL.
 
+| Métrique | Valeur |
+|----------|--------|
+| **Accuracy** | **90.2%** |
+| **F1-Score** | **90.2%** |
+| **Validation croisée (F1)** | 89.3% ± 0.9% |
+| **Stress test** | 87.5% sur cas étiquetés |
+| **Features** | 52 (URL-only) |
+| **Temps d'inférence** | < 1 ms / URL |
+| **Dépendance réseau** | ❌ Aucune |
+| **Taille du modèle** | 20 MB |
+
 ```text
                      URL
                       │
@@ -294,34 +307,45 @@ sans :
 
 ## ⚠️ Limitation connue
 
-Le modèle présente actuellement une faiblesse concernant les **identifiants longs et alphanumériques présents dans le chemin d'une URL**.
+Le modèle présente une **faiblesse** sur les URLs contenant :
 
-Certaines features comme :
+- des identifiants longs et alphanumériques dans le chemin
+- des tokens de session
+- des UUIDs / hashs
+- des IDs numériques longs
 
-```text
-length_words_raw
-longest_words_raw
-char_repeat
-ratio_digits_url
-```
+### 📊 Mesure de la limitation
 
-peuvent contribuer à augmenter artificiellement la probabilité de phishing pour certaines applications web modernes et légitimes.
+Le stress test (`tools/stress_test.py`) sur 24 cas étiquetés montre
+**3 faux positifs** (~12.5%) :
 
-Ce phénomène est particulièrement pertinent pour les URLs contenant :
+| URL légitime classée phishing | P(phishing) |
+|-------------------------------|-------------|
+| `docs.google.com/document/d/1a2b3c4d...` | 78.3% |
+| `notion.so/My-Workspace-Page-a1b2c3d4e5f6...` | 86.7% |
+| `news.ycombinator.com/item?id=38452901` | 70.6% |
 
-* des identifiants de documents ;
-* des chaînes générées automatiquement ;
-* des identifiants de session ;
-* des tokens ou paramètres complexes.
+Ces 3 URLs contiennent toutes des identifiants longs qui déclenchent les
+features `length_words_raw`, `longest_words_raw`, `char_repeat` ou
+`ratio_digits_url`.
 
-Cette limitation est probablement liée au **dataset historique**, construit à partir de données datant de 2020.
+### 🔍 Cause
 
-Les cas limites peuvent être reproduits avec :
+Le dataset historique (Hannousse & Yahiouche, 2020) est antérieur à la
+généralisation des UUIDs et tokens modernes (Notion, Google Docs, etc.).
+Le modèle a donc appris que "chaîne longue et aléatoire = suspect".
+
+### 🎯 Piste d'amélioration
+
+Entraîner le modèle sur un dataset plus récent, ou ajouter une feature
+`has_uuid_pattern` qui distingue les identifiants légitimes des chaînes
+aléatoires suspectes.
+
+### Reproduire
 
 ```bash
 python tools/stress_test.py
 ```
-
 ---
 
 ## 🧠 Résumé du choix architectural

@@ -1,19 +1,18 @@
 """
 feature_extractor.py — Phishing URL Detector
 
-Extrait les 79 features attendues par le modèle (models/feature_list.json)
-à partir d'une URL brute, avec au maximum 1 requête HTTP.
+Extrait les features attendues par le modèle (models/feature_list.json)
+à partir d'une URL brute. Le nombre de features est dynamique
+(52 en mode URL-only, 79 en mode complet).
 
-Chaque feature est marquée dans FEATURE_TIER :
-  - "trivial"   : définition sans ambiguïté, pas de validation particulière requise
-  - "ambigu"    : heuristique reconstituée, DOIT être validée contre le dataset
-                  avant d'être considérée fiable (voir tools/validate_against_dataset.py)
-  - "conflit"   : la définition originale contredit le contrat "1 requête HTTP max" ;
-                  implémentée en fallback dégradé, décision d'équipe à trancher
+Les features sont marquées par niveau de confiance :
+  - trivial  : définition sans ambiguïté
+  - ambigu   : heuristique reconstituée, à valider via tools/validate_against_dataset.py
+  - conflit  : contredit le contrat "1 requête HTTP max" ; fallback dégradé
 
 Usage:
     from feature_extractor import extract_features
-    features = extract_features("http://example.com/login")  # -> liste de 79 float, ordonnée
+    features = extract_features("http://example.com/login")  # -> list[float] ordonnée
 """
 
 import re
@@ -35,23 +34,15 @@ USER_AGENT = "Mozilla/5.0 (compatible; PhishingURLDetector/1.0)"
 _TLD_EXTRACTOR = tldextract.TLDExtract(suffix_list_urls=())
 
 # ---------------------------------------------------------------------------
-# Lexiques (à affiner par l'équipe — Cybersecurity/Threat Analysis notamment)
+# Lexiques (importés depuis src/lexicons.py — maintenus par l'équipe Cyber)
 # ---------------------------------------------------------------------------
 
-SUSPICIOUS_TLDS = {"tk", "ml", "ga", "cf", "gq", "xyz", "top", "work", "support", "click", "loan", "review"}
-SHORTENING_SERVICES = {
-    "bit.ly", "tinyurl.com", "goo.gl", "t.co", "ow.ly", "is.gd",
-    "buff.ly", "adf.ly", "shorte.st", "cutt.ly", "rebrand.ly",
-}
-KNOWN_BRANDS = {
-    "paypal", "google", "facebook", "apple", "amazon", "microsoft",
-    "netflix", "instagram", "whatsapp", "bankofamerica", "wellsfargo",
-    "chase", "twitter", "linkedin", "ebay", "dropbox",
-}
-PHISH_HINT_WORDS = [
-    "login", "secure", "account", "update", "verify", "banking",
-    "confirm", "signin", "password", "webscr", "ebayisapi", "suspend",
-]
+from lexicons import (
+    SUSPICIOUS_TLDS,
+    SHORTENING_SERVICES,
+    KNOWN_BRANDS,
+    PHISH_HINT_WORDS,
+)
 
 # ---------------------------------------------------------------------------
 # Contexte : tout ce qui est calculé une seule fois par URL
