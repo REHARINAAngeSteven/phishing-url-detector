@@ -5,6 +5,57 @@ Détection automatique des URLs de phishing à l'aide du Machine Learning.
 > ⛔ In development
 
 ---
+## ⚙️ Installation / Setup
+
+### Prérequis
+- Python 3.12
+- Un compte Kaggle (pour télécharger le dataset) des fois démandés mais pas contraignant
+
+### 1. Cloner le repo et installer les dépendances
+
+```bash
+git clone https://github.com/REHARINAAngeSteven/phishing-url-detector.git
+cd phishing-url-detector
+python3 -m venv .venv
+source .venv/bin/activate  # ou .venv\Scripts\activate sous Windows
+pip install -r requirements.txt
+```
+
+### 2. Récupérer le dataset
+
+Télécharger le **Web Page Phishing Detection Dataset** (Hannousse & Yahiouche) depuis Kaggle :
+
+👉 [https://www.kaggle.com/datasets/shashwatwork/web-page-phishing-detection-dataset]
+
+Renommer le fichier CSV téléchargé en `dataset_phishing.csv` et le placer dans :
+
+```text
+data/raw/dataset_phishing.csv
+```
+
+> Le dossier `data/raw/` n'est pas versionné (voir `.gitignore`) : ce fichier doit être ajouté manuellement par chaque personne qui clone le repo.
+
+### 3. Générer les fichiers modèle
+
+```bash
+python tools/retrain_url_only.py
+```
+
+Ce script régénère, dans `models/` :
+- `best_model.joblib`
+- `scaler.joblib`
+- `label_encoder.joblib`
+- `feature_list.json`
+
+(eux non plus non versionnés — voir `.gitignore` — donc à régénérer localement après chaque clone)
+
+### 4. Vérifier que tout fonctionne
+
+```bash
+python tools/stress_test.py
+```
+
+Doit afficher un score autour de 83% sur les cas étiquetés.
 
 ## 🔬 De 87 features à 52 features URL-only
 
