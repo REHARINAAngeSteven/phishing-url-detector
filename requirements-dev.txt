@@ -1,0 +1,25 @@
+# ============================================================
+# Phishing URL Detector — Dépendances de développement
+# ============================================================
+#
+# Pour : notebooks, exploration, visualisation, tests
+# À installer EN PLUS des requirements.txt de production
+#
+# Usage :
+#   pip install -r requirements-dev.txt
+# ============================================================
+
+# Dépendances de production
+-r requirements.txt
+
+# --- Notebooks et visualisation ---
+jupyter==1.1.1
+matplotlib==3.11.1
+seaborn==0.13.2
+
+# --- Téléchargement du dataset ---
+kagglehub==1.0.2
+
+# --- Tests (Membre 5 — à décommenter) ---
+# pytest==8.3.4
+# pytest-cov==6.0.0

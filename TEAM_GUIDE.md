@@ -81,7 +81,8 @@ source .venv/bin/activate
 ### 3. Installer les dépendances
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt          # Production (base)
+pip install -r requirements-dev.txt      # Dev (notebooks, tests)
 ```
 
 ### 4. Vérifier que tout fonctionne
