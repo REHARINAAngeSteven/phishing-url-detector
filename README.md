@@ -2,7 +2,9 @@
 
 Détection automatique des URLs de phishing à l'aide du Machine Learning.
 
-> ⛔ In development
+> 👥 **Nouveau dans l'équipe ?** Lire le [TEAM_GUIDE.md](./TEAM_GUIDE.md)
+
+⛔ In development
 
 ---
 ## ⚙️ Installation / Setup
@@ -18,7 +20,8 @@ git clone https://github.com/REHARINAAngeSteven/phishing-url-detector.git
 cd phishing-url-detector
 python3 -m venv .venv
 source .venv/bin/activate  # ou .venv\Scripts\activate sous Windows
-pip install -r requirements.txt
+pip install -r requirements.txt          # Production (base)
+pip install -r requirements-dev.txt      # Dev (notebooks, tests)
 ```
 
 ### 2. Récupérer le dataset
