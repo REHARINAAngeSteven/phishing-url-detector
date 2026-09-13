@@ -2,7 +2,9 @@
 
 Détection automatique des URLs de phishing à l'aide du Machine Learning.
 
-> ⛔ In development
+> 👥 **Nouveau dans l'équipe ?** Lire le [TEAM_GUIDE.md](./TEAM_GUIDE.md)
+
+⛔ In development
 
 ---
 ## ⚙️ Installation / Setup
