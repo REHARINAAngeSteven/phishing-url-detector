@@ -110,8 +110,12 @@ def main():
     # Mêmes hyperparamètres que le Random Forest du notebook original,
     # pour rester comparable.
     rf = RandomForestClassifier(
-        n_estimators=100, random_state=42, max_depth=10,
-        min_samples_split=5, n_jobs=-1,
+        n_estimators=200,
+        max_depth=20,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        random_state=42,
+        n_jobs=-1,
     )
     rf.fit(X_train_s, y_train)
     y_pred = rf.predict(X_test_s)
