@@ -4,14 +4,16 @@ Détection automatique des URLs de phishing à l'aide du Machine Learning.
 
 > 👥 **Nouveau dans l'équipe ?** Lire le [TEAM_GUIDE.md](./TEAM_GUIDE.md)
 
-⛔ In development
+**État** : Machine Learning terminé — Backend/UI en cours
 
 ---
+
 ## ⚙️ Installation / Setup
 
 ### Prérequis
+
 - Python 3.12
-- Un compte Kaggle (pour télécharger le dataset) des fois démandés mais pas contraignant
+- Un compte Kaggle (pour télécharger le dataset) — parfois demandé mais pas contraignant
 
 ### 1. Cloner le repo et installer les dépendances
 
@@ -20,8 +22,12 @@ git clone https://github.com/REHARINAAngeSteven/phishing-url-detector.git
 cd phishing-url-detector
 python3 -m venv .venv
 source .venv/bin/activate  # ou .venv\Scripts\activate sous Windows
-pip install -r requirements.txt          # Production (base)
-pip install -r requirements-dev.txt      # Dev (notebooks, tests)
+
+# Pour développement (recommandé pour les nouveaux membres) :
+pip install -r requirements-dev.txt
+
+# Pour production seule (API, déploiement) :
+# pip install -r requirements.txt
 ```
 
 ### 2. Récupérer le dataset
@@ -38,19 +44,22 @@ data/raw/dataset_phishing.csv
 
 > Le dossier `data/raw/` n'est pas versionné (voir `.gitignore`) : ce fichier doit être ajouté manuellement par chaque personne qui clone le repo.
 
-### 3. Générer les fichiers modèle
+### 3. Vérifier les fichiers modèle
+
+Les modèles sont **versionnés sur GitHub** :
+
+- `models/best_model.joblib` (21 MB)
+- `models/scaler.joblib`
+- `models/label_encoder.joblib`
+- `models/feature_list.json`
+
+**Pas besoin de régénérer** pour utiliser le projet.
+
+Pour régénérer (si vous modifiez les features) :
 
 ```bash
 python tools/retrain_url_only.py
 ```
-
-Ce script régénère, dans `models/` :
-- `best_model.joblib`
-- `scaler.joblib`
-- `label_encoder.joblib`
-- `feature_list.json`
-
-(eux non plus non versionnés — voir `.gitignore` — donc à régénérer localement après chaque clone)
 
 ### 4. Vérifier que tout fonctionne
 
@@ -58,9 +67,11 @@ Ce script régénère, dans `models/` :
 python tools/stress_test.py
 ```
 
-Doit afficher un score d'environ 87-88% sur les cas étiquetés.
+Doit afficher un score d'environ **87-88%** sur les cas étiquetés.
 Les cas en erreur sont des faux positifs sur des URLs légitimes contenant
-des identifiants longs (voir section "Limitation connue").
+des identifiants longs (voir section [Limitation connue](#-limitation-connue)).
+
+---
 
 ## 🔬 De 87 features à 52 features URL-only
 
@@ -193,7 +204,7 @@ Cela crée un **train/serve skew** : le modèle n'interprète plus nécessaireme
 
 ---
 
-# ✅ Étape 2 — Passage à 52 features URL-only
+## ✅ Étape 2 — Passage à 52 features URL-only
 
 Pour résoudre ces problèmes, nous avons décidé de reconstruire le pipeline autour d'un principe simple :
 
@@ -349,6 +360,7 @@ aléatoires suspectes.
 ```bash
 python tools/stress_test.py
 ```
+
 ---
 
 ## 🧠 Résumé du choix architectural
